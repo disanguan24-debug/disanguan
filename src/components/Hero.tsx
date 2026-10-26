@@ -94,12 +94,19 @@ export const Hero: React.FC<HeroProps> = ({
 
           {/* Right Column: Hero Image Container */}
           <div className="lg:col-span-5">
-            <div className="relative rounded-2xl overflow-hidden shadow-lg border border-slate-200 bg-slate-100 aspect-16/11 sm:aspect-4/3 lg:aspect-auto lg:h-[460px]">
+            <div className="relative rounded-2xl overflow-hidden shadow-lg border border-slate-200 bg-sky-100 aspect-16/11 sm:aspect-4/3 lg:aspect-auto lg:h-[460px]">
               <img
-                src="/src/assets/images/hero_home_care_1792992399585.jpg"
-                alt="Perawat profesional Home Care sedang merawat lansia dengan ramah di rumah"
+                src={businessConfig.heroImageUrl || '/images/hero_home_care.jpg'}
+                alt="Perawat profesional Home Care merawat pasien di rumah"
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
+                onError={(e) => {
+                  // Fallback to default public image if custom URL fails
+                  const target = e.currentTarget;
+                  if (target.src !== window.location.origin + '/images/hero_home_care.jpg') {
+                    target.src = '/images/hero_home_care.jpg';
+                  }
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-900/10 to-transparent pointer-events-none" />
               

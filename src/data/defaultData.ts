@@ -14,7 +14,8 @@ export const DEFAULT_BUSINESS_CONFIG: BusinessConfig = {
   confirmationNotice: 'Permintaan booking Anda sedang diverifikasi oleh admin. Kami akan menghubungi Anda via WhatsApp maksimal dalam 30 menit pada jam operasional untuk konfirmasi ketersediaan perawat.',
   cancellationPolicy: 'Perubahan atau pembatalan jadwal dapat dilakukan tanpa biaya maksimal 3 jam sebelum waktu kunjungan yang telah disepakati.',
   privacyInfo: 'Data pribadi dan ringkasan kondisi kesehatan pasien dilindungi secara ketat dan hanya digunakan untuk keperluan koordinasi kunjungan tenaga kesehatan berwenang.',
-  licenseInfo: 'Layanan beroperasi berkolaborasi dengan Fasilitas Pelayanan Kesehatan / Klinik Pratama Terdaftar (Izin Operasional No: KLN-503/440/DINKES/2024)'
+  licenseInfo: 'Layanan beroperasi berkolaborasi dengan Fasilitas Pelayanan Kesehatan / Klinik Pratama Terdaftar (Izin Operasional No: KLN-503/440/DINKES/2024)',
+  heroImageUrl: '/images/hero_home_care.jpg'
 };
 
 export const INITIAL_SERVICES: ServiceItem[] = [
@@ -38,7 +39,7 @@ export const INITIAL_SERVICES: ServiceItem[] = [
     ],
     serviceArea: 'Jabodetabek (Radius 20 km)',
     isActive: true,
-    image: '/src/assets/images/nurse_vital_check_1792992400055.jpg'
+    image: '/images/nurse_vital_check.jpg'
   },
   {
     id: 'SRV-02',
@@ -60,7 +61,7 @@ export const INITIAL_SERVICES: ServiceItem[] = [
     ],
     serviceArea: 'Jabodetabek (Radius 25 km)',
     isActive: true,
-    image: '/src/assets/images/elderly_care_home_1792992399992.jpg'
+    image: '/images/elderly_care_home.jpg'
   },
   {
     id: 'SRV-03',
@@ -82,7 +83,7 @@ export const INITIAL_SERVICES: ServiceItem[] = [
     ],
     serviceArea: 'Jabodetabek (Radius 20 km)',
     isActive: true,
-    image: '/src/assets/images/sterile_wound_care_1792992400683.jpg'
+    image: '/images/sterile_wound_care.jpg'
   },
   {
     id: 'SRV-04',
@@ -104,7 +105,7 @@ export const INITIAL_SERVICES: ServiceItem[] = [
     ],
     serviceArea: 'Jabodetabek (Radius 20 km)',
     isActive: true,
-    image: '/src/assets/images/nurse_vital_check_1792992400055.jpg'
+    image: '/images/nurse_vital_check.jpg'
   },
   {
     id: 'SRV-05',
@@ -126,7 +127,7 @@ export const INITIAL_SERVICES: ServiceItem[] = [
     ],
     serviceArea: 'Jabodetabek (Radius 25 km)',
     isActive: true,
-    image: '/src/assets/images/hero_home_care_1792992399585.jpg'
+    image: '/images/hero_home_care.jpg'
   },
   {
     id: 'SRV-06',
@@ -148,7 +149,7 @@ export const INITIAL_SERVICES: ServiceItem[] = [
     ],
     serviceArea: 'Jabodetabek (Radius 20 km)',
     isActive: true,
-    image: '/src/assets/images/sterile_wound_care_1792992400683.jpg'
+    image: '/images/sterile_wound_care.jpg'
   }
 ];
 

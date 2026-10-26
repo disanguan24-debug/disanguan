@@ -79,6 +79,7 @@ export interface BusinessConfig {
   cancellationPolicy: string;
   privacyInfo: string;
   licenseInfo: string;
+  heroImageUrl?: string;
 }
 
 export interface TimeSlotOption {

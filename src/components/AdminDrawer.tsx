@@ -3,7 +3,8 @@ import {
   X, Settings, ListFilter, Sliders, Building2, 
   CheckCircle2, Clock, Edit3, Save, PhoneCall, RefreshCw,
   Lock, Unlock, Eye, EyeOff, LogOut, KeyRound, AlertCircle, 
-  Database, Check, AlertTriangle, ArrowUpRight
+  Database, Check, AlertTriangle, ArrowUpRight, Upload, 
+  Image as ImageIcon, RotateCcw
 } from 'lucide-react';
 import { BookingData, ServiceItem, BusinessConfig, BookingStatus } from '../types';
 import { 
@@ -79,6 +80,7 @@ export const AdminDrawer: React.FC<AdminDrawerProps> = ({
   const [cfgHours, setCfgHours] = useState(businessConfig.operationalHours);
   const [cfgArea, setCfgArea] = useState(businessConfig.serviceArea);
   const [cfgLicense, setCfgLicense] = useState(businessConfig.licenseInfo);
+  const [cfgHeroImage, setCfgHeroImage] = useState(businessConfig.heroImageUrl || '/images/hero_home_care.jpg');
   const [isSavingConfig, setIsSavingConfig] = useState(false);
 
   // Real-time backend feedback alerts
@@ -210,6 +212,63 @@ export const AdminDrawer: React.FC<AdminDrawerProps> = ({
     setHasServiceChanges(true);
   };
 
+  // Upload Foto untuk Layanan
+  const handleServiceImageUpload = (srvId: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Ukuran file foto maksimal 5 MB.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64 = event.target?.result as string;
+      const updated = editableServices.map(s => {
+        if (s.id === srvId) {
+          return { ...s, image: base64 };
+        }
+        return s;
+      });
+      setEditableServices(updated);
+      setHasServiceChanges(true);
+      showFeedback('success', `Foto layanan berhasil diunggah! Klik tombol 'Simpan Semua Perubahan Tarif ke Sheets' di bawah untuk menyimpan.`);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Ubah Gambar Layanan via URL
+  const handleServiceImageUrlChange = (srvId: string, newUrl: string) => {
+    const updated = editableServices.map(s => {
+      if (s.id === srvId) {
+        return { ...s, image: newUrl };
+      }
+      return s;
+    });
+    setEditableServices(updated);
+    setHasServiceChanges(true);
+  };
+
+  // Upload Foto Banner Hero
+  const handleHeroImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Ukuran file foto maksimal 5 MB.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64 = event.target?.result as string;
+      setCfgHeroImage(base64);
+      showFeedback('success', `Foto banner beranda berhasil dimuat! Klik 'Simpan Perubahan Info Usaha ke Sheets'.`);
+    };
+    reader.readAsDataURL(file);
+  };
+
   // 3. SAVE SERVICES & TARIFFS (REAL SYNC TO SPREADSHEET)
   const handleSaveServices = async () => {
     setIsSavingServices(true);
@@ -245,7 +304,8 @@ export const AdminDrawer: React.FC<AdminDrawerProps> = ({
       address: cfgAddress.trim(),
       operationalHours: cfgHours.trim(),
       serviceArea: cfgArea.trim(),
-      licenseInfo: cfgLicense.trim()
+      licenseInfo: cfgLicense.trim(),
+      heroImageUrl: cfgHeroImage
     };
 
     try {
@@ -735,6 +795,54 @@ export const AdminDrawer: React.FC<AdminDrawerProps> = ({
                           </div>
                         </div>
 
+                        {/* Photo Preview & Custom Upload Control */}
+                        <div className="my-3 p-2.5 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between gap-3 flex-wrap">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-14 h-14 rounded-lg bg-slate-200 overflow-hidden border border-slate-300 shrink-0 relative">
+                              <img
+                                src={srv.image}
+                                alt={srv.name}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  (e.currentTarget as HTMLImageElement).src = '/images/nurse_vital_check.jpg';
+                                }}
+                              />
+                            </div>
+                            <div>
+                              <span className="font-semibold text-slate-800 block text-[11px]">Foto Layanan</span>
+                              <span className="text-[10px] text-slate-500">
+                                {srv.image.startsWith('data:image') 
+                                  ? 'Foto kustom diupload dari perangkat' 
+                                  : 'Foto bawaan sistem'}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <label className="cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-semibold bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 rounded-lg transition-colors shadow-2xs">
+                              <Upload className="w-3.5 h-3.5 text-sky-600" />
+                              <span>Upload Foto dari HP / Komputer</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) => handleServiceImageUpload(srv.id, e)}
+                              />
+                            </label>
+
+                            {srv.image.startsWith('data:image') && (
+                              <button
+                                type="button"
+                                onClick={() => handleServiceImageUrlChange(srv.id, '/images/nurse_vital_check.jpg')}
+                                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg border border-slate-200 bg-white"
+                                title="Kembalikan foto bawaan"
+                              >
+                                <RotateCcw className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
                         <div className="mt-2 text-[11px] text-slate-500 line-clamp-1">
                           Cakupan: {srv.scope.join(', ')}
                         </div>
@@ -855,6 +963,54 @@ export const AdminDrawer: React.FC<AdminDrawerProps> = ({
                         onChange={(e) => setCfgLicense(e.target.value)}
                         className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white"
                       />
+                    </div>
+
+                    {/* Foto Banner Beranda (Hero Banner) Upload */}
+                    <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <label className="block font-bold text-slate-800 text-xs">
+                            Foto Banner Beranda Utama (Hero Image)
+                          </label>
+                          <span className="text-[11px] text-slate-500">
+                            Foto besar yang tampil di sisi kanan bagian atas website
+                          </span>
+                        </div>
+                        {cfgHeroImage !== '/images/hero_home_care.jpg' && (
+                          <button
+                            type="button"
+                            onClick={() => setCfgHeroImage('/images/hero_home_care.jpg')}
+                            className="text-[11px] text-sky-600 hover:text-sky-800 underline flex items-center gap-1"
+                          >
+                            <RotateCcw className="w-3 h-3" />
+                            <span>Reset Bawaan</span>
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <div className="w-20 h-14 rounded-lg bg-slate-200 overflow-hidden border border-slate-300 shrink-0">
+                          <img
+                            src={cfgHeroImage}
+                            alt="Preview Banner Hero"
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.currentTarget as HTMLImageElement).src = '/images/hero_home_care.jpg';
+                            }}
+                          />
+                        </div>
+
+                        <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 rounded-lg transition-colors shadow-2xs">
+                          <Upload className="w-3.5 h-3.5 text-sky-600" />
+                          <span>Ganti / Upload Foto Banner</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handleHeroImageUpload}
+                          />
+                        </label>
+                      </div>
                     </div>
 
                     <div className="pt-2">

@@ -32,11 +32,30 @@ export const verifyAdminPassword = (inputPassword: string): boolean => {
   return inputPassword === current;
 };
 
+export const normalizeImagePath = (path?: string): string => {
+  if (!path) return '/images/hero_home_care.jpg';
+  if (path.startsWith('data:image')) return path; // User uploaded base64 image
+  if (path.startsWith('http://') || path.startsWith('https://')) return path; // Remote URL
+  if (path.includes('nurse_vital_check')) return '/images/nurse_vital_check.jpg';
+  if (path.includes('elderly_care_home')) return '/images/elderly_care_home.jpg';
+  if (path.includes('sterile_wound_care')) return '/images/sterile_wound_care.jpg';
+  if (path.includes('hero_home_care')) return '/images/hero_home_care.jpg';
+  if (path.startsWith('/src/assets/images/')) {
+    return path.replace('/src/assets/images/', '/images/').replace(/_\d+\.jpg$/, '.jpg');
+  }
+  return path;
+};
+
 export const getStoredConfig = (): BusinessConfig => {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.CONFIG);
     if (raw) {
-      return { ...DEFAULT_BUSINESS_CONFIG, ...JSON.parse(raw) };
+      const parsed = JSON.parse(raw);
+      return { 
+        ...DEFAULT_BUSINESS_CONFIG, 
+        ...parsed,
+        heroImageUrl: normalizeImagePath(parsed.heroImageUrl || DEFAULT_BUSINESS_CONFIG.heroImageUrl)
+      };
     }
   } catch (e) {
     console.error('Error reading config from storage:', e);
@@ -59,7 +78,11 @@ export const getStoredServices = (): ServiceItem[] => {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.SERVICES);
     if (raw) {
-      return JSON.parse(raw);
+      const parsed: ServiceItem[] = JSON.parse(raw);
+      return parsed.map(s => ({
+        ...s,
+        image: normalizeImagePath(s.image)
+      }));
     }
   } catch (e) {
     console.error('Error reading services from storage:', e);

@@ -72,21 +72,24 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
             >
               <div>
                 {/* Image Slot with Fallback */}
-                <div className="relative h-48 w-full bg-slate-100 overflow-hidden">
+                <div className="relative h-48 w-full bg-sky-900/10 overflow-hidden">
                   <img
                     src={service.image}
                     alt={service.name}
                     className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
                     referrerPolicy="no-referrer"
                     onError={(e) => {
-                      // Fallback visual if asset cannot load
-                      (e.target as HTMLElement).style.display = 'none';
+                      const target = e.currentTarget;
+                      // Fallback to default bundled image if external or old path fails
+                      if (target.src !== window.location.origin + '/images/nurse_vital_check.jpg') {
+                        target.src = '/images/nurse_vital_check.jpg';
+                      }
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent pointer-events-none" />
                   
                   {/* Category unboxed tag on image bottom */}
-                  <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white text-xs font-medium">
+                  <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white text-xs font-medium pointer-events-none">
                     <span className="font-semibold drop-shadow-xs">{service.category}</span>
                     <span className="text-sky-200 font-mono text-[11px] drop-shadow-xs">{service.id}</span>
                   </div>
