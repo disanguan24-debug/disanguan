@@ -1,0 +1,6 @@
+{
+  "name": "Home Care Online",
+  "description": "Aplikasi informasi dan sistem booking layanan kesehatan Home Care online terintegrasi Google Sheets dan WhatsApp.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
